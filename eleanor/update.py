@@ -128,17 +128,52 @@ class Update(object):
                                           unit=(u.hourangle, u.deg))
 
 
-        if self.sector < 14 or (self.sector > 26 and self.sector < 40):
+        # if self.sector < 14 or (self.sector > 26 and self.sector < 40):
+        #     print('south')
+        #     use_coords = self.south_coords
+        # elif self.sector in [42, 43, 44]:
+        #     use_coords = self.ecliptic_coords_a
+        # elif self.sector in [45, 46]:
+        #     use_coords = self.ecliptic_coords_b
+        # else:
+        #     print('north')
+        #     use_coords = self.north_coords
+        
+        # Code edited by dinil
+        if 1 <= self.sector <= 13:
             use_coords = self.south_coords
-        elif self.sector in [42, 43, 44]:
-            use_coords = self.ecliptic_coords_a
-        elif self.sector in [45, 46]:
-            use_coords = self.ecliptic_coords_b
-        else:
+        elif 14 <= self.sector <= 26:
             use_coords = self.north_coords
+        elif 27 <= self.sector <= 39:
+            use_coords = self.south_coords
+        elif 40 <= self.sector <= 41:
+            use_coords = self.north_coords
+        elif 42 <= self.sector <= 44:
+            use_coords = self.ecliptic_coords_a
+        elif 45 <= self.sector <= 46:
+            use_coords = self.ecliptic_coords_b
+        elif 46 <= self.sector <= 55:
+            use_coords = self.north_coords
+        elif 56 <= self.sector <= 60:
+            use_coords = self.north_coords
+        elif 61 <= self.sector <= 69:
+            use_coords = self.south_coords
+        elif 70 <= self.sector <= 71:
+            use_coords = self.ecliptic_coords_a
+        elif 71 <= self.sector <= 72:
+            use_coords = self.ecliptic_coords_a
+        elif 73 <= self.sector <= 83:
+            use_coords = self.north_coords
+        else:
+            print('Sector not found, write RA Dec info in Update Class')
+
+
+        print('Coordinates', use_coords)
 
         try:
+            print('Coordinates', use_coords)
             manifest = Tesscut.download_cutouts(coordinates=use_coords, size=31, sector=self.sector)
+            print('Print',manifest['Local Path'][0])
             success = 1
         except:
             print("This sector isn't available yet.")
@@ -152,6 +187,7 @@ class Update(object):
 
 
         # memmap=False as wokaround for https://github.com/afeinstein20/eleanor/issues/204
+        #print('Print',manifest['Local Path'][0])
         self.cutout = fits.open(manifest['Local Path'][0], memmap=False)
 
 
@@ -182,8 +218,12 @@ class Update(object):
             year = 2020
         elif self.sector <= 47:
             year = 2021
-        else:
+        elif self.sector <= 60:
             year = 2022
+        elif self.sector <= 73:
+            year = 2023
+        else:
+            year = 2024
 
         url = 'https://archive.stsci.edu/missions/tess/ffi/s{0:04d}/{1}/'.format(self.sector, year)
 

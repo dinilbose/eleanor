@@ -293,7 +293,7 @@ class Source(object):
         cols = result[6][result[3] <= maxsector]
         rows = result[7][result[3] <= maxsector]
         sectors = result[3][result[3] <= maxsector]
-
+        # print(result)
         # tess_stars2px returns array [-1] when star not observed yet
         if len(sectors) < 1 or sectors[0] == np.array([-1]):
             raise SearchError("Tess has not (yet) observed your target.")
